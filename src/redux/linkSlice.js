@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+//added to see current state is logging currently not being used
+import { current } from '@reduxjs/toolkit'
 
 export const fetchGroupListAsync= createAsyncThunk(
   'loadGroups/fetchGroupListAsync',
@@ -19,11 +21,11 @@ export const linkSlice = createSlice({
         state.value -= 1
       },
       addLink: (state, action) => {
-        state.value += action.payload
+        state[action.payload.header].links.push({name: action.payload.name, url: action.payload.url});
       },
     },
     extraReducers: {
-      [fetchGroupListAsync.fulfilled]: (_, action) => {
+      [fetchGroupListAsync.fulfilled]: (state, action) => {
         return action.payload.groupList;
       }
     },

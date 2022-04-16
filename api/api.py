@@ -11,20 +11,20 @@ class LINK(db.Model):
     url = db.Column(db.Text, primary_key=False)
     #icon = db.Column(db.Text, primary_key=False)
 
-    link_group_id = db.Column(db.Integer, db.ForeignKey('LINK_GROUPS.id'), nullable=False)
+    link_group_header = db.Column(db.Text, db.ForeignKey('LINK_GROUPS.header'), nullable=False)
 
     def __str__(self):
         return f'{self.id} {self.title}'
 
 class LINK_GROUPS(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    header = db.Column(db.Text, primary_key=False)
+    header = db.Column(db.Text, primary_key=True)
     bookmarkGroup = db.Column(db.Boolean, default=False, primary_key=False)
     links = db.relationship('LINK', backref='links')
 
     def __str__(self):
-        return f'{self.id} {self.header}'
+        return f'{self.header}'
 
+db.create_all()
 
 
 def link_serializer(link):
@@ -38,14 +38,20 @@ def link_group_serializer(group):
     if(group.links):
         links = [link_serializer(link) for link in group.links]
     return {
-        'id': group.id,
         'header': group.header,
         'links': links
     }
 
 @app.route('/loadGroups', methods = ['GET'])
 def loadGroups():
-    return jsonify([*map(link_group_serializer, LINK_GROUPS.query.all())])
+    test = list(map(link_group_serializer, LINK_GROUPS.query.all()));
+    new = {};
+    #Temporary fix till i look into returning directorys properly in python
+    for x in test:
+        print(x['header'])
+        new[x['header']] = x
+    return jsonify(new)
+    #return jsonify([*map(link_group_serializer, LINK_GROUPS.query.all())])
 
 # @app.route('/initApplication', methods = ['POST'])
 # def initApplication():

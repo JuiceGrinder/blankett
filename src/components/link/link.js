@@ -5,7 +5,7 @@ export const Link = ({listOfLinks}) => {
         <>
             {listOfLinks.map(app => {
                 return(
-                    <div key={app.id}>
+                    <div key={app.name}>
                         <a href={app.url}>{app.name}</a>
                     </div>
                 )

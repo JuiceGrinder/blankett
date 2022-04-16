@@ -1,26 +1,47 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { addLink } from '../../redux/linkSlice'
 import { Button, Form } from 'react-bootstrap'
 
-export const InitLinkForm = () => {    
+export const InitLinkForm = ({headerInfo}) => {  
+    
+    const [initState, setInitState] = useState(headerInfo);
+
+    const dispatch = useDispatch();
+
+    const handleChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setInitState(values => ({...values, [name]: value}))
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        dispatch(addLink(initState))
+        //console.log(initState);
+    }
+
     return (
         <>
-            <Form>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
+            <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                    <Form.Label>Application</Form.Label>
+                    <Form.Control
+                        name="name"
+                        onChange={handleChange} 
+                        placeholder="Application"/>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>URL</Form.Label>
+                    <Form.Control
+                        name="url"
+                        onChange={handleChange} 
+                        placeholder="URL" />
                     <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
+                    Don't forget http(s)://
                     </Form.Text>
                 </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
-                </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button className="float-end" variant="primary" type="submit">
                     Submit
                 </Button>
             </Form>
